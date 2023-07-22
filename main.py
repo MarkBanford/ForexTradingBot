@@ -37,4 +37,4 @@ for candle in data['candles']:
     our_data.append(new_dict)
 
 candles_df = pd.DataFrame.from_dict(our_data)
-print(candles_df.head(5))
+print(candles_df.head(6))
