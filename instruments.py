@@ -1,5 +1,6 @@
 import requests
 import defs
+import pandas as pd
 
 session = requests.Session()  # create session so we can request alot without being blocked
 
@@ -10,7 +11,6 @@ response = session.get(url, params=None, headers=defs.SECURE_HEADER)
 data = response.json()
 
 instruments = data['instruments']
-print(instruments[0].keys())
 
 instrument_data = []
 
@@ -24,5 +24,7 @@ for item in instruments:
     )
     instrument_data.append(new_obj)
 
-for i in instrument_data:
-    print(i)
+instrument_df = pd.DataFrame.from_dict(instrument_data)
+
+instrument_df.to_pickle('instrument.pkl')
+instrument_df.to_csv('instrument.csv', index=False)

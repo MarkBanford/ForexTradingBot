@@ -1,10 +1,11 @@
+import pandas as pd
 import requests
 import defs
 
 session = requests.Session()  # create session so we can request alot without being blocked
 instrument = "EUR_USD"
 count = 10
-granularity = "H1"
+granularity = "S5"
 
 url = f'{defs.OANDA_URL}/instruments/{instrument}/candles'
 
@@ -18,6 +19,22 @@ params = dict(
 
 response = session.get(url, params=params, headers=defs.SECURE_HEADER)
 
-print(response.status_code)
+data = response.json()
+prices = ['mid', 'bid', 'ask']
+ohlc = ['o', 'h', 'l', 'c']
 
-print(response.json())
+our_data = list()
+for candle in data['candles']:
+    if not candle['complete']:
+        continue
+    new_dict = dict()
+    new_dict['time'] = candle['time']
+    new_dict['volume'] = candle['volume']
+    for price in prices:
+        for oh in ohlc:
+            new_dict[f'{price}_{oh}'] = candle[price][oh]
+
+    our_data.append(new_dict)
+
+candles_df = pd.DataFrame.from_dict(our_data)
+print(candles_df.head(5))
