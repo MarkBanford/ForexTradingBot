@@ -4,7 +4,7 @@ import defs
 
 session = requests.Session()  # create session so we can request alot without being blocked
 instrument = "EUR_USD"
-count = 10
+count = 1000
 granularity = "S5"
 
 url = f'{defs.OANDA_URL}/instruments/{instrument}/candles'
@@ -35,6 +35,7 @@ for candle in data['candles']:
             new_dict[f'{price}_{oh}'] = candle[price][oh]
 
     our_data.append(new_dict)
+
 
 candles_df = pd.DataFrame.from_dict(our_data)
 candles_df.to_csv("EUR_USD.csv", index=False)
